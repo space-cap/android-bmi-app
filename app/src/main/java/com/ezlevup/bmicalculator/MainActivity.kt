@@ -23,6 +23,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -108,7 +109,13 @@ class BmiViewModel : ViewModel() {
 fun HomeScreen(navController: NavController, viewModel: BmiViewModel) {
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(text = "비만도 계산기") })
+            TopAppBar(
+                title = { Text(text = "비만도 계산기") },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Blue,
+                    titleContentColor = Color.White
+                )
+            )
         }
     ) { paddingValues ->
         Column(
@@ -182,7 +189,12 @@ fun ResultScreen(navController: NavController, viewModel: BmiViewModel) {
                             contentDescription = "뒤로가기"
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Blue,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
+                )
             )
         }
     ) { paddingValues ->
