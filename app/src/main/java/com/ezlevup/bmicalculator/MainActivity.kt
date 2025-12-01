@@ -37,6 +37,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.ezlevup.bmicalculator.ui.theme.BMICalculatorTheme
 
 class MainActivity : ComponentActivity() {
@@ -44,23 +50,18 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             BMICalculatorTheme {
-                var showResultScreen by rememberSaveable { mutableStateOf(false) }
-                var bmi by rememberSaveable { mutableStateOf(0.0) }
-
-                if (showResultScreen) {
-                    ResultScreen(
-                        bmi = bmi,
-                        onBack = {
-                            showResultScreen = false
-                        }
-                    )
-                } else {
-                    HomeScreen(
-                        onCalculate = {
-                            bmi = it
-                            showResultScreen = true
-                        }
-                    )
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = "home") {
+                    composable("home") {
+                        HomeScreen(navController = navController)
+                    }
+                    composable(
+                        "result/{bmi}",
+                        arguments = listOf(navArgument("bmi") { type = NavType.FloatType })
+                    ) {
+                        val bmi = it.arguments?.getFloat("bmi")?.toDouble() ?: 0.0
+                        ResultScreen(navController = navController, bmi = bmi)
+                    }
                 }
             }
         }
@@ -69,7 +70,7 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(onCalculate: (bmi: Double) -> Unit) {
+fun HomeScreen(navController: NavController) {
     var height by rememberSaveable { mutableStateOf("") }
     var weight by rememberSaveable { mutableStateOf("") }
 
@@ -104,7 +105,7 @@ fun HomeScreen(onCalculate: (bmi: Double) -> Unit) {
                     val w = weight.toDoubleOrNull()
                     if (h != null && w != null && h > 0 && w > 0) {
                         val bmiResult = w / (h / 100 * h / 100)
-                        onCalculate(bmiResult)
+                        navController.navigate("result/$bmiResult")
                     }
                 },
                 modifier = Modifier.align(Alignment.End),
@@ -118,7 +119,7 @@ fun HomeScreen(onCalculate: (bmi: Double) -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ResultScreen(bmi: Double, onBack: () -> Unit) {
+fun ResultScreen(navController: NavController, bmi: Double) {
     val resultText: String
     val resultColor: Color
 
@@ -146,7 +147,7 @@ fun ResultScreen(bmi: Double, onBack: () -> Unit) {
             TopAppBar(
                 title = { Text(text = "비만도 계산 결과") },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "뒤로가기"
@@ -179,7 +180,7 @@ fun ResultScreen(bmi: Double, onBack: () -> Unit) {
 @Composable
 fun HomeScreenPreview() {
     BMICalculatorTheme {
-        HomeScreen(onCalculate = {})
+        HomeScreen(navController = rememberNavController())
     }
 }
 
@@ -187,6 +188,6 @@ fun HomeScreenPreview() {
 @Composable
 fun ResultScreenPreview() {
     BMICalculatorTheme {
-        ResultScreen(bmi = 24.5, onBack = {})
+        ResultScreen(navController = rememberNavController(), bmi = 24.5)
     }
 }
