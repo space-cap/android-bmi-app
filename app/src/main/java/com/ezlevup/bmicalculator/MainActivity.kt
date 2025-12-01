@@ -50,15 +50,21 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             BMICalculatorTheme {
+                // 내비게이션 컨트롤러 생성 및 기억
                 val navController = rememberNavController()
+                // NavHost: 내비게이션 그래프를 정의하고, 화면 전환을 관리
                 NavHost(navController = navController, startDestination = "home") {
+                    // "home" 경로에 대한 화면 정의
                     composable("home") {
                         HomeScreen(navController = navController)
                     }
+                    // "result/{bmi}" 경로에 대한 화면 정의. {bmi}는 전달받을 인자
                     composable(
                         "result/{bmi}",
+                        // "bmi" 인자의 타입을 FloatType으로 지정
                         arguments = listOf(navArgument("bmi") { type = NavType.FloatType })
                     ) {
+                        // arguments에서 "bmi" 값을 추출. 안전하게 Float로 받고 Double로 변환
                         val bmi = it.arguments?.getFloat("bmi")?.toDouble() ?: 0.0
                         ResultScreen(navController = navController, bmi = bmi)
                     }
@@ -105,6 +111,7 @@ fun HomeScreen(navController: NavController) {
                     val w = weight.toDoubleOrNull()
                     if (h != null && w != null && h > 0 && w > 0) {
                         val bmiResult = w / (h / 100 * h / 100)
+                        // "result" 경로로 이동하면서 계산된 bmiResult 값을 전달
                         navController.navigate("result/$bmiResult")
                     }
                 },
@@ -147,6 +154,7 @@ fun ResultScreen(navController: NavController, bmi: Double) {
             TopAppBar(
                 title = { Text(text = "비만도 계산 결과") },
                 navigationIcon = {
+                    // 뒤로가기 버튼 클릭 시 이전 화면으로 이동
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
