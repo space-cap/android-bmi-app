@@ -22,7 +22,9 @@ Kotlin과 Jetpack Compose를 사용하여 만든 간단한 안드로이드 비�
 
 | 입력 화면 | 결과 화면 |
 | :---: | :---: |
-| ![입력 화면](<여기에_입력화면_이미지_URL_또는_경로를_입력하세요>) | ![결과 화면](<여기에_결과화면_이미지_URL_또는_경로를_입력하세요>) |
+| ![입력 화면](<img width="352" height="491" alt="image" src="https://github.com/user-attachments/assets/3e9103b8-dfe0-440e-80d5-3016ca43255a" />
+) | ![결과 화면](<img width="351" height="555" alt="image" src="https://github.com/user-attachments/assets/afa41c20-4fe3-4509-a8b1-f585880b8353" />
+) |
 
 ## 📝 학습 과정
 
